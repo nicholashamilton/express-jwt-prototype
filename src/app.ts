@@ -24,13 +24,18 @@ class App {
 
     private expressConfig(): void {
         this.express.use(bodyParser.json());
-        this.express.use(bodyParser.urlencoded({ extended: false }));
+        this.express.use(bodyParser.urlencoded({
+            extended: true
+        }));
         this.express.use(cors());
     }
 
     private setRoutes(): void {
         const indexRoute = require('./routes/index') as NodeRequire;
         this.express.use('/', indexRoute);
+
+        const userRoute = require('./routes/user') as NodeRequire;
+        this.express.use('/user', userRoute);
     }
 
     private dbConfig(): void {
