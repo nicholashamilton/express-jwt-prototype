@@ -5,18 +5,18 @@ import isAuthenticated from '../middleware/isAuthenticated';
 import attatchUser from '../middleware/attatchUser';
 import { Request, Response } from 'express';
 import { IUserAuthRequest } from '../../global';
+import { IUser } from '../../user';
 
 router.get('/current', isAuthenticated, attatchUser, async (req: IUserAuthRequest, res: Response) => {
-    const user = req.currentUser;
+    const user = req.currentUser as IUser;
     return res.status(200).json({ user, success: true }).end();
 });
 
 router.post('/login', async (req: Request, res: Response) => {
-    const email = req.body.user.email;
-    const password = req.body.user.password;
+    const reqUser = req.body.user as IUser;
     try {
         const authServiceInstance = new AuthService();
-        const { user, token, error } = await authServiceInstance.login(email, password);
+        const { user, token, error } = await authServiceInstance.login(reqUser.email, reqUser.password);
         if (error) {
             return res.json({ error }).status(500).end();
         }
@@ -28,7 +28,7 @@ router.post('/login', async (req: Request, res: Response) => {
 
 router.post('/signup', async (req: Request, res: Response) => {
     try {
-        const reqUser = req.body.user;
+        const reqUser = req.body.user as IUser;
         const authServiceInstance = new AuthService();
         const { user, token, error } = await authServiceInstance.signUp(reqUser);
         if (error) {
