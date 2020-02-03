@@ -1,5 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
+import http from 'http';
 import cors from 'cors';
 import mongoose from 'mongoose';
 
@@ -45,9 +46,11 @@ class App {
 
     private appListen(): void {
         if (this.port) {
-            this.express.listen(this.port, () => console.log(`Listening on port ${this.port}`));
+            const server = http.createServer(this.express) as http.Server;
+            server.listen(this.port);
+            server.on('listening', () => console.log(`Listening on port ${this.port}`));
         } else {
-            throw new Error('Port Is Not Set');
+            throw new Error('Port is not set');
         }
     }
 }
