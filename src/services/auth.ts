@@ -2,14 +2,14 @@ import UserModel from '../models/user';
 import * as jwt from 'jsonwebtoken';
 import Joi from 'joi';
 import bcrypt from 'bcrypt';
-import { UserInterface } from '../../user';
+import { UserInterface, AuthServiceInterface } from '../../user';
 
 export default class AuthService {
-      public async signUp(user: UserInterface): Promise<any> {
+      public async signUp(user: UserInterface): Promise<AuthServiceInterface> {
         const { username, email, password, firstName, lastName } = user;
 
-        const { error } = this.validateUser(user);
-        if (error) return { error };
+        const { error } = this.validateUserObject(user);
+        if (error) return { error: error.details[0].message };
 
         const existingEmail = await UserModel.findOne({ email });
         if (existingEmail) return { error: 'Email is already being used...' };
@@ -18,29 +18,27 @@ export default class AuthService {
         if (existingUsername) return { error: 'Username is already being used, please pick another...' };
 
         const hashedPassword = await bcrypt.hash(password, 10);
-
         const userRecord = await UserModel.create({
+            username,
             password: hashedPassword,
             email,
             salt: 10,
             firstName,
             lastName
         });
-
         await userRecord.save();
 
         const token = this.generateJWT(userRecord);
-
         return {
             user: {
                 email: userRecord.email,
                 username: userRecord.username,
             },
-			token
+            token
         }
     }
 
-    private validateUser(user: UserInterface): any {
+    private validateUserObject(user: UserInterface): any {
         const schema = {
             username: Joi.string().min(3).max(50).required(),
             email: Joi.string().min(5).max(255).required().email(),
@@ -57,7 +55,7 @@ export default class AuthService {
                 _id: user._id,
                 username: user.username,
                 email: user.email
-			}
-		}, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRATION });
-	}
+            }
+        }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRATION });
+    }
 }
