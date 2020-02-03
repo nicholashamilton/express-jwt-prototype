@@ -1,22 +1,25 @@
 import jwt from 'jsonwebtoken';
+import { Response, NextFunction } from 'express';
+import { IUserAuthRequest } from '../../global';
 
-export default (req:any, res:any, next:any) => {
-    const token = req.headers['x-access-token'];
+export default (req: IUserAuthRequest, res: Response, next: NextFunction) => {
+    const token = req.headers['x-access-token'] as string;
     if (token) {
-        jwt.verify(token, process.env.JWT_SECRET, (err:any, decoded:any) => {
+        jwt.verify(token, process.env.JWT_SECRET, (err: jwt.VerifyErrors, decoded: object | string) => {
             if (err) {
                 return res.status(401).json({
                     success: false,
-                    error: 'Token is not valid.'
+                    error: `Token is not valid: ${err}`
                 }).end();
             }
-            req.user = decoded;
+            // @ts-ignore
+            req.currentUser = decoded.data;
             return next();
         });
     } else {
         return res.status(401).json({
             success: false,
-            error: 'Token is not valid.'
+            error: 'No token was provided'
         }).end();
     }
 };

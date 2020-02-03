@@ -20,5 +20,5 @@
   "exclude": [
     "node_modules"
   ],
-  "types": "./user.d.ts"
+  "types": ["./user.d.ts", "./global.d.ts"]
 }

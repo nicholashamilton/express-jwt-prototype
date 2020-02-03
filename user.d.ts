@@ -1,4 +1,4 @@
-export interface UserInterface {
+export interface IUser {
 	username: string,
 	email: string;
 	password?: string;
@@ -8,8 +8,8 @@ export interface UserInterface {
 	_id?: string
 }
 
-export interface AuthServiceInterface {
-	user?: UserInterface,
+export interface IAuthServiceMessage {
+	user?: IUser,
 	token?: string,
 	error?: string
 }

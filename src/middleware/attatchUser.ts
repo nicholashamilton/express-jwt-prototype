@@ -1,8 +1,10 @@
 import UserModel from '../models/user';
+import { Response, NextFunction } from 'express';
+import { IUserAuthRequest } from '../../global';
 
-export default async (req:any, res:any, next:any) => {
+export default async (req: IUserAuthRequest, res: Response, next: NextFunction) => {
     try {
-        const userId = req.user.data._id as string;
+        const userId = req.currentUser._id as string;
         const user = await UserModel.findById(userId).select('-password -salt');
         if (!user) {
             res.status(401).end();

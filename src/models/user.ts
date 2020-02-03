@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
-import { UserInterface } from '../../user';
-import { string } from 'joi';
+import { IUser } from '../../user';
 
 const UserSchema = new mongoose.Schema({
     username: {
@@ -34,4 +33,4 @@ const UserSchema = new mongoose.Schema({
     }
 });
 
-export default mongoose.model<UserInterface & mongoose.Document>('User', UserSchema);
+export default mongoose.model<IUser & mongoose.Document>('User', UserSchema);
