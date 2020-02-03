@@ -5,7 +5,27 @@ import bcrypt from 'bcrypt';
 import { UserInterface, AuthServiceInterface } from '../../user';
 
 export default class AuthService {
-      public async signUp(user: UserInterface): Promise<AuthServiceInterface> {
+
+    public async login(email: string, password: string): Promise<AuthServiceInterface> {
+        const userDocument = await UserModel.findOne({ email });
+        if (!userDocument) {
+            return { error: 'User not found' };
+        }
+        const match = await bcrypt.compare(password, userDocument.password);
+        if (match) {
+            const token = this.generateJWT(userDocument);
+            return {
+                user: {
+                    email: userDocument.email,
+                    username: userDocument.username,
+                },
+                token
+            }
+        }
+        return { error: 'Password do not match.' };
+    }
+
+    public async signUp(user: UserInterface): Promise<AuthServiceInterface> {
         const { username, email, password, firstName, lastName } = user;
 
         const { error } = this.validateUserObject(user);
@@ -18,7 +38,7 @@ export default class AuthService {
         if (existingUsername) return { error: 'Username is already being used, please pick another...' };
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        const userRecord = await UserModel.create({
+        const userDocument = await UserModel.create({
             username,
             password: hashedPassword,
             email,
@@ -26,13 +46,13 @@ export default class AuthService {
             firstName,
             lastName
         });
-        await userRecord.save();
+        await userDocument.save();
 
-        const token = this.generateJWT(userRecord);
+        const token = this.generateJWT(userDocument);
         return {
             user: {
-                email: userRecord.email,
-                username: userRecord.username,
+                email: userDocument.email,
+                username: userDocument.username,
             },
             token
         }
@@ -49,7 +69,7 @@ export default class AuthService {
         return Joi.validate(user, schema);
     }
 
-    private generateJWT(user: UserInterface) {
+    private generateJWT(user: UserInterface): string {
         return jwt.sign({
             data: {
                 _id: user._id,
