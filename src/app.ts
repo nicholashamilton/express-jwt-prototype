@@ -44,7 +44,11 @@ class App {
     }
 
     private appListen(): void {
-        this.express.listen(this.port, () => console.log(`Listening on port ${this.port}`));
+        if (this.port === undefined) {
+            this.express.listen(this.port, () => console.log(`Listening on port ${this.port}`));
+        } else {
+            throw new Error('Port Is Undefined');
+        }
     }
 }
 
