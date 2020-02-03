@@ -1,6 +1,7 @@
 import UserModel from '../models/user';
 import { Response, NextFunction } from 'express';
 import { IUserAuthRequest } from '../../global';
+import { IUser } from '../../user';
 
 export default async (req: IUserAuthRequest, res: Response, next: NextFunction) => {
     try {
@@ -9,7 +10,7 @@ export default async (req: IUserAuthRequest, res: Response, next: NextFunction) 
         if (!user) {
             res.status(401).end();
         }
-        req.currentUser = user;
+        req.currentUser = user as IUser;
         return next();
     } catch(error) {
         return res.json(error).status(500);

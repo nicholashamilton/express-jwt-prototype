@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { Response, NextFunction } from 'express';
 import { IUserAuthRequest } from '../../global';
+import { IUser } from '../../user';
 
 export default (req: IUserAuthRequest, res: Response, next: NextFunction) => {
     const token = req.headers['x-access-token'] as string;
@@ -12,7 +13,7 @@ export default (req: IUserAuthRequest, res: Response, next: NextFunction) => {
                     error: `Token is not valid: ${err}`
                 }).end();
             }
-            req.currentUser = decoded.data;
+            req.currentUser = decoded.data as IUser;
             return next();
         });
     } else {
