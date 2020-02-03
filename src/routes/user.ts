@@ -1,6 +1,13 @@
 import express from 'express';
 const router = express.Router();
 import AuthService from '../services/auth';
+import isAuthenticated from '../middleware/isAuthenticated';
+import attatchUser from '../middleware/attatchUser';
+
+router.get('/current', isAuthenticated, attatchUser, async (req:any, res) => {
+    const user = req.currentUser;
+    return res.status(200).json({ user, success: true }).end();
+});
 
 router.post('/login', async (req, res) => {
     const email = req.body.user.email;
@@ -8,7 +15,6 @@ router.post('/login', async (req, res) => {
     try {
         const authServiceInstance = new AuthService();
         const { user, token, error } = await authServiceInstance.login(email, password);
-        console.log(user, token);
         if (error) {
             return res.json({ error }).status(500).end();
         }
