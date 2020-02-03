@@ -7,12 +7,12 @@ import mongoose from 'mongoose';
 class App {
     public express: express.Application;
     private port: string;
-    private mongoUri: string;
+    private databaseUri: string;
 
-    constructor(port: string, mongoUri: string) {
+    constructor(port: string, databaseUri: string) {
         this.express = express();
         this.port = port;
-        this.mongoUri = mongoUri;
+        this.databaseUri = databaseUri;
     }
 
     public init(): void {
@@ -34,7 +34,7 @@ class App {
     }
 
     private dbConfig(): void {
-        mongoose.connect(this.mongoUri, {
+        mongoose.connect(this.databaseUri, {
             useNewUrlParser: true,
             useUnifiedTopology: true
         })
