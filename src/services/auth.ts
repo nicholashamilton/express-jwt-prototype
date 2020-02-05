@@ -37,12 +37,12 @@ export default class AuthService {
         const existingUsername = await UserModel.findOne({ username });
         if (existingUsername) return { error: 'Username is already being used, please pick another...' };
 
-        const hashedPassword = await bcrypt.hash(password, 10);
+        const salt = parseInt(process.env.SALT, 10) as number;
+        const hashedPassword = await bcrypt.hash(password, salt);
         const userDocument = await UserModel.create({
             username,
             password: hashedPassword,
             email,
-            salt: 10,
             firstName,
             lastName
         });

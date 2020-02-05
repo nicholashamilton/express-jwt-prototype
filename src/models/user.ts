@@ -26,10 +26,6 @@ const UserSchema = new mongoose.Schema({
     role: {
         type: String,
         default: 'user', // Possible values: user | admin
-    },
-    salt: {
-        type: String,
-        required: true,
     }
 });
 
