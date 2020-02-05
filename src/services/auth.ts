@@ -58,7 +58,7 @@ export default class AuthService {
         }
     }
 
-    private validateUserObject(user: IUser): any {
+    private validateUserObject(user: IUser): Joi.ValidationResult<IUser> {
         const schema = {
             username: Joi.string().min(3).max(50).required(),
             email: Joi.string().min(5).max(255).required().email(),

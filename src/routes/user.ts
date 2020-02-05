@@ -18,7 +18,7 @@ router.post('/login', async (req: Request, res: Response) => {
         const authServiceInstance = new AuthService();
         const { user, token, error } = await authServiceInstance.login(reqUser.email, reqUser.password);
         if (error) {
-            return res.json({ error }).status(500).end();
+            return res.json({ error }).status(401).end();
         }
         return res.status(200).json({ user, token }).end();
     } catch (error) {
@@ -32,7 +32,7 @@ router.post('/signup', async (req: Request, res: Response) => {
         const authServiceInstance = new AuthService();
         const { user, token, error } = await authServiceInstance.signUp(reqUser);
         if (error) {
-            return res.json({ error }).status(500).end();
+            return res.json({ error }).status(401).end();
         }
         return res.json({ user, token }).status(200).end();
     } catch (error) {
