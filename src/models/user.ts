@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import { IUser } from '../../user';
+import Goal from './goal';
 
 const UserSchema = new mongoose.Schema({
     username: {
@@ -25,8 +26,18 @@ const UserSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        default: 'user', // Possible values: user | admin
-    }
+        default: 'user',
+    },
+    likes: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Goal'
+    }],
+    following: [{
+
+    }],
+    followers: [{
+
+    }]
 });
 
 export default mongoose.model<IUser & mongoose.Document>('User', UserSchema);

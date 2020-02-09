@@ -36,6 +36,9 @@ class App {
 
         const userRoute = require('./routes/user') as NodeRequire;
         this.express.use('/user', userRoute);
+
+        const goalsRoute = require('./routes/goals') as NodeRequire;
+        this.express.use('/goals', goalsRoute);
     }
 
     private dbConfig(): void {

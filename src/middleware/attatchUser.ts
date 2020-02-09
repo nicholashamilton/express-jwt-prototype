@@ -6,7 +6,7 @@ import { IUser } from '../../user';
 export default async (req: IUserAuthRequest, res: Response, next: NextFunction) => {
     try {
         const userId = req.currentUser._id as string;
-        const user = await UserModel.findById(userId).select('-password -salt');
+        const user = await UserModel.findById(userId).select('-password');
         if (!user) {
             res.status(401).end();
         }
