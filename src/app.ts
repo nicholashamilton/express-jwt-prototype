@@ -54,6 +54,10 @@ class App {
             const server = http.createServer(this.express) as http.Server;
             server.listen(this.port);
             server.on('listening', () => console.log(`Listening on port ${this.port}`));
+            server.on('clientError', (err, socket) => {
+                if (err) console.error(err);
+                socket.end('HTTP/1.1 400 Bad Request\r\n\r\n');
+            });
         } else {
             throw new Error('Port is not set');
         }
